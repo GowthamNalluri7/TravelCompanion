@@ -1,47 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    tools:context=".MainPageActivity">
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <!-- Greeting based on time -->
+    <!-- Top Section for Greeting and Weather -->
     <TextView
         android:id="@+id/greetingTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Good Afternoon, User!"
         android:textSize="24sp"
         android:textColor="#333"
-        android:text="Good Morning, User!" />
+        android:fontFamily="sans-serif-medium" />
 
-    <!-- Weather information -->
     <TextView
         android:id="@+id/weatherTextView"
-        android:layout_below="@id/greetingTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Weather: Sunny, 25°C"
         android:textSize="18sp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:textColor="#666" />
 
-    <!-- RecyclerView for Recommendations -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview"
-        android:layout_below="@id/weatherTextView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="16dp"
-        android:layout_above="@+id/refreshButton"
-        tools:listitem="@layout/recommendation_item" />
-
-    <!-- Refresh Button for demo purpose -->
-    <Button
-        android:id="@+id/refreshButton"
+    <!-- New TextView for displaying the user's current location -->
+    <TextView
+        android:id="@+id/locationTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:text="Refresh Recommendations" />
-</RelativeLayout>
+        android:text="Current Location: Loading..."
+        android:textSize="16sp"
+        android:layout_marginTop="4dp"
+        android:textColor="#666" />
+
+    <!-- Section Title for Restaurants -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Restaurants Recommended for You"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="#000" />
+
+    <!-- RecyclerView for Restaurant Recommendations -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/restaurantRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    <!-- Section Title for Activities -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Activities You Might Enjoy"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="#000" />
+
+    <!-- RecyclerView for Activity Recommendations -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/activityRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    <!-- Bottom Section for Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/refreshButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Refresh Recommendations" />
+
+        <Button
+            android:id="@+id/updateLocationButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Update Location" />
+    </LinearLayout>
+</LinearLayout>

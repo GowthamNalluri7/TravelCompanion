@@ -1,19 +1,21 @@
 package com.example.travelcompanion;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.core.app.ActivityCompat;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.IOException;
-
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private Spinner breakfastSpinner, lunchSpinner, dinnerSpinner;
     private Button submitButton;
     private OkHttpClient client = new OkHttpClient();
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,46 +84,15 @@ public class MainActivity extends AppCompatActivity {
         String lunchMeal = lunchSpinner.getSelectedItem().toString();
         String dinnerMeal = dinnerSpinner.getSelectedItem().toString();
 
-        String TAG = "Details";
-        android.util.Log.i(TAG, "Indoor Activity: " + indoorActivity);
-        android.util.Log.i(TAG, "Outdoor Activity: " + outdoorActivity);
-        android.util.Log.i(TAG, "Breakfast Time: " + breakfastTimeInput);
-        android.util.Log.i(TAG, "Lunch Time: " + lunchTimeInput);
-        android.util.Log.i(TAG, "Dinner Time: " + dinnerTimeInput);
-        android.util.Log.i(TAG, "Breakfast Meal: " + breakfastMeal);
-        android.util.Log.i(TAG, "Lunch Meal: " + lunchMeal);
-        android.util.Log.i(TAG, "Dinner Meal: " + dinnerMeal);
-
-        //sendToBackend(json);
-        Toast.makeText(this, "User Details Stored Successfully", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(MainActivity.this, MainPageActivity.class);
+        intent.putExtra("indoorActivity", indoorActivity);
+        intent.putExtra("outdoorActivity", outdoorActivity);
+        intent.putExtra("breakfastTime", breakfastTimeInput);
+        intent.putExtra("lunchTime", lunchTimeInput);
+        intent.putExtra("dinnerTime", dinnerTimeInput);
+        intent.putExtra("breakfastMeal", breakfastMeal);
+        intent.putExtra("lunchMeal", lunchMeal);
+        intent.putExtra("dinnerMeal", dinnerMeal);
         startActivity(intent);
-    }
-
-    private void sendToBackend(JSONObject json) {
-        RequestBody body = RequestBody.create(
-                MediaType.parse("application/json; charset=utf-8"), json.toString());
-
-        Request request = new Request.Builder()
-                .url("http://your-ip-address:5000/preferences")
-                .post(body)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-                runOnUiThread(() ->
-                        Toast.makeText(MainActivity.this, "Failed to send data", Toast.LENGTH_SHORT).show());
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    runOnUiThread(() ->
-                            Toast.makeText(MainActivity.this, "Preferences sent!", Toast.LENGTH_SHORT).show());
-                }
-            }
-        });
     }
 }
