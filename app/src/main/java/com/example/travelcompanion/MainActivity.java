@@ -1,5 +1,6 @@
 package com.example.travelcompanion;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -80,15 +81,27 @@ public class MainActivity extends AppCompatActivity {
         String lunchMeal = lunchSpinner.getSelectedItem().toString();
         String dinnerMeal = dinnerSpinner.getSelectedItem().toString();
 
-        String TAG = "Details";
-        android.util.Log.i(TAG, "Indoor Activity: " + indoorActivity);
-        android.util.Log.i(TAG, "Outdoor Activity: " + outdoorActivity);
-        android.util.Log.i(TAG, "Breakfast Time: " + breakfastTimeInput);
-        android.util.Log.i(TAG, "Lunch Time: " + lunchTimeInput);
-        android.util.Log.i(TAG, "Dinner Time: " + dinnerTimeInput);
-        android.util.Log.i(TAG, "Breakfast Meal: " + breakfastMeal);
-        android.util.Log.i(TAG, "Lunch Meal: " + lunchMeal);
-        android.util.Log.i(TAG, "Dinner Meal: " + dinnerMeal);
+//        String TAG = "Details";
+//        android.util.Log.i(TAG, "Indoor Activity: " + indoorActivity);
+//        android.util.Log.i(TAG, "Outdoor Activity: " + outdoorActivity);
+//        android.util.Log.i(TAG, "Breakfast Time: " + breakfastTimeInput);
+//        android.util.Log.i(TAG, "Lunch Time: " + lunchTimeInput);
+//        android.util.Log.i(TAG, "Dinner Time: " + dinnerTimeInput);
+//        android.util.Log.i(TAG, "Breakfast Meal: " + breakfastMeal);
+//        android.util.Log.i(TAG, "Lunch Meal: " + lunchMeal);
+//        android.util.Log.i(TAG, "Dinner Meal: " + dinnerMeal);
+
+        // Create an intent to start ConfirmationActivity
+        Intent intent = new Intent(MainActivity.this, ConfirmationActivity.class);
+        intent.putExtra("indoorActivity", indoorActivity);
+        intent.putExtra("outdoorActivity", outdoorActivity);
+        intent.putExtra("breakfastTime", breakfastTimeInput);
+        intent.putExtra("lunchTime", lunchTimeInput);
+        intent.putExtra("dinnerTime", dinnerTimeInput);
+        intent.putExtra("breakfastMeal", breakfastMeal);
+        intent.putExtra("lunchMeal", lunchMeal);
+        intent.putExtra("dinnerMeal", dinnerMeal);
+        startActivity(intent);
 
 //        JSONObject json = new JSONObject();
 //        try {
