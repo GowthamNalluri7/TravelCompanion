@@ -1,5 +1,6 @@
 package com.example.travelcompanion;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -90,22 +91,10 @@ public class MainActivity extends AppCompatActivity {
         android.util.Log.i(TAG, "Lunch Meal: " + lunchMeal);
         android.util.Log.i(TAG, "Dinner Meal: " + dinnerMeal);
 
-//        JSONObject json = new JSONObject();
-//        try {
-//            json.put("indoor_activity", indoorActivity);
-//            json.put("outdoor_activity", outdoorActivity);
-//            json.put("breakfast_time", breakfastTimeInput);
-//            json.put("lunch_time", lunchTimeInput);
-//            json.put("dinner_time", dinnerTimeInput);
-//            json.put("breakfast_meal", breakfastMeal);
-//            json.put("lunch_meal", lunchMeal);
-//            json.put("dinner_meal", dinnerMeal);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-
         //sendToBackend(json);
         Toast.makeText(this, "User Details Stored Successfully", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(MainActivity.this, MainPageActivity.class);
+        startActivity(intent);
     }
 
     private void sendToBackend(JSONObject json) {
