@@ -3,31 +3,45 @@ package com.example.travelcompanion;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Geocoder;
 import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.widget.Toast;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 public class MainPageActivity extends AppCompatActivity {
 
+    private static final String WEATHER_API_KEY = "ef10fcced2ae0f630a729efe0bf52d2c"; // Replace with your OpenWeatherMap API key
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private FusedLocationProviderClient fusedLocationClient;
     private TextView greetingTextView, weatherTextView, locationTextView;
@@ -73,6 +87,7 @@ public class MainPageActivity extends AppCompatActivity {
         activityRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Load initial data and location updates
+        updateUserContext();
         getCurrentLocation();
 
         // Refresh recommendations on button click
@@ -120,9 +135,13 @@ public class MainPageActivity extends AppCompatActivity {
             List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
             if (addresses != null && !addresses.isEmpty()) {
                 Address address = addresses.get(0);
-                String city = address.getLocality();
-                String addressLine = address.getAddressLine(0);
-                locationTextView.setText("Current Location: " + (city != null ? city : addressLine));
+                String city = address.getLocality(); // Get the city name
+                String province = address.getAdminArea(); // Get the province/state name
+
+                // Format as "City, Province"
+                String locationText = (city != null ? city : "Unknown City") + ", " +
+                        (province != null ? province : "Unknown Province");
+                locationTextView.setText("Current Location: " + locationText);
             } else {
                 locationTextView.setText("Location: Unknown");
             }
@@ -139,8 +158,10 @@ public class MainPageActivity extends AppCompatActivity {
         // Update time-based greeting
         updateTimeBasedGreeting();
 
-        // Update weather-based recommendation
-        updateWeatherInfo();
+        // Fetch weather based on location
+        if (currentLocation != null) {
+            fetchWeather(currentLocation);
+        }
     }
 
     private void fetchNearbyRecommendations(Location location) {
@@ -156,21 +177,21 @@ public class MainPageActivity extends AppCompatActivity {
             activityRecommendations.add("Yoga Studio - Relaxing morning activity");
             activityRecommendations.add("Early Bird Gym - Start your day right");
             activityRecommendations.add("Botanical Gardens - Morning stroll");
-        } else if (hour >= 12 && hour < 14) {
+        } else if (hour >= 12 && hour < 16) {
             restaurantRecommendations.add("Spicy Biryani House - Great for " + lunchMeal);
             restaurantRecommendations.add("Rice Bowl - Offers fried rice options");
             restaurantRecommendations.add("Asian Delights - Known for rice dishes");
             activityRecommendations.add("Central Park - Afternoon picnic");
             activityRecommendations.add("City Sports Complex - Play " + outdoorActivity);
             activityRecommendations.add("Museum Visit - Afternoon exploration");
-        } else if (hour >= 16 && hour < 18) {
+        } else if (hour >= 16 && hour < 19) {
             restaurantRecommendations.add("Snack Shack - Perfect for snacks");
             restaurantRecommendations.add("Coffee Corner - Afternoon coffee spot");
             restaurantRecommendations.add("Bakery Bliss - Fresh pastries");
             activityRecommendations.add("Indoor Game Zone - Play " + indoorActivity);
             activityRecommendations.add("Art Studio - Evening art sessions");
             activityRecommendations.add("Shopping Mall - Evening shopping");
-        } else if (hour >= 18 && hour < 22) {
+        } else if (hour >= 19 && hour < 23) {
             restaurantRecommendations.add("Dinner Hub - Best for " + dinnerMeal);
             restaurantRecommendations.add("Steakhouse - Known for gourmet dishes");
             restaurantRecommendations.add("Fusion Cuisine - Ideal for rice dishes");
@@ -193,8 +214,43 @@ public class MainPageActivity extends AppCompatActivity {
         greetingTextView.setText(greeting + ", User!");
     }
 
-    private void updateWeatherInfo() {
-        weatherTextView.setText("Weather: Sunny, 25°C");
+    private void fetchWeather(Location location) {
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+
+        // URL for OpenWeatherMap API
+        String url = "https://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&units=metric&appid=" + WEATHER_API_KEY;
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder().url(url).build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> weatherTextView.setText("Weather: Unavailable"));
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String responseData = response.body().string();
+                    try {
+                        JSONObject json = new JSONObject(responseData);
+                        String weatherDescription = json.getJSONArray("weather").getJSONObject(0).getString("description");
+                        double temperature = json.getJSONObject("main").getDouble("temp");
+
+                        // Update the weather information on the UI
+                        runOnUiThread(() -> weatherTextView.setText("Weather: " + weatherDescription + ", " + temperature + "°C"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        runOnUiThread(() -> weatherTextView.setText("Weather: Unavailable"));
+                    }
+                } else {
+                    runOnUiThread(() -> weatherTextView.setText("Weather: Unavailable"));
+                }
+            }
+        });
     }
 
     // Handle location permissions
