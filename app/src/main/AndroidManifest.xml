@@ -18,13 +18,8 @@
         android:theme="@style/Theme.TravelCompanion"
         tools:targetApi="31">
         <activity
-<<<<<<< HEAD
-            android:name=".ConfirmationActivity"
-            android:exported="false" />
-=======
             android:name=".MainPageActivity"
-            android:exported="true" />
->>>>>>> origin/main
+            android:exported="true"/>
         <activity
             android:name=".MainActivity"
             android:exported="true">

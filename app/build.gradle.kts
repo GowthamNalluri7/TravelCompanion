@@ -39,6 +39,8 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.okhttp)
     implementation(libs.play.services.location)
+    implementation(libs.retrofit)
+    implementation(libs.gson)
     implementation(libs.recyclerview)
     implementation(libs.cardview)
     testImplementation(libs.junit)

@@ -1,7 +1,10 @@
 package com.example.travelcompanion;
 
+import static androidx.constraintlayout.motion.widget.Debug.getLocation;
+
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -13,16 +16,28 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
-import okhttp3.Call;
-import okhttp3.Callback;
+//import okhttp3.Call;
+//import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.Response;
+//import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,10 +48,22 @@ public class MainActivity extends AppCompatActivity {
     private OkHttpClient client = new OkHttpClient();
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Request location permissions
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_PERMISSION_REQUEST_CODE);
+        } else {
+            // Permissions already granted, proceed with location fetching
+            getLocation();
+        }
 
         // Initialize UI elements
         indoorSpinner = findViewById(R.id.indoorSpinner);
@@ -52,6 +79,21 @@ public class MainActivity extends AppCompatActivity {
         setupSpinners();
 
         submitButton.setOnClickListener(v -> sendPreferences());
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, proceed with location fetching
+                getLocation();
+            } else {
+                // Permission denied, handle it accordingly
+                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void setupSpinners() {
