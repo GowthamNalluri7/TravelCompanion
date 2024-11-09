@@ -18,12 +18,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -47,12 +41,19 @@ public class MainActivity extends AppCompatActivity {
     private Button submitButton;
     private OkHttpClient client = new OkHttpClient();
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private FusedLocationProviderClient fusedLocationClient;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Initialize location client
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        // Request location permission and display current location
+        requestLocationPermission();
 
         // Request location permissions
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -81,19 +82,59 @@ public class MainActivity extends AppCompatActivity {
         submitButton.setOnClickListener(v -> sendPreferences());
     }
 
+    private void requestLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_PERMISSION_REQUEST_CODE);
+        } else {
+            // Permission already granted
+            displayCurrentLocation();
+        }
+    }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted, proceed with location fetching
-                getLocation();
+                // Permission granted, fetch and display location
+                displayCurrentLocation();
             } else {
-                // Permission denied, handle it accordingly
-                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void displayCurrentLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // If permission is not granted, exit
+            return;
+        }
+
+        fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
+            if (location != null) {
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+
+                // Display the latitude and longitude in a Toast message
+                Toast.makeText(this, "Current Location:\nLatitude: " + latitude + "\nLongitude: " + longitude, Toast.LENGTH_LONG).show();
+
+                // Optionally, save the location
+                saveLocation("CurrentLocation", latitude, longitude);
+            } else {
+                Toast.makeText(this, "Failed to get current location", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void saveLocation(String locationName, double latitude, double longitude) {
+        SharedPreferences sharedPreferences = getSharedPreferences("SavedLocations", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(locationName + "_lat", String.valueOf(latitude));
+        editor.putString(locationName + "_lon", String.valueOf(longitude));
+        editor.apply();
     }
 
     private void setupSpinners() {
