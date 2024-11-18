@@ -1,0 +1,58 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <!-- Location -->
+        <TextView
+            android:id="@+id/locationTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Location: Loading..."
+            android:padding="8dp"
+            android:textSize="18sp" />
+
+        <!-- Weather -->
+        <TextView
+            android:id="@+id/weatherTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Live Temperature: Loading..."
+            android:padding="8dp"
+            android:textSize="18sp" />
+
+        <!-- Activity Suggestions -->
+        <TextView
+            android:id="@+id/activitySuggestions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="-- Activity Suggestions --"
+            android:padding="8dp"
+            android:textSize="18sp"
+            android:gravity="center" />
+
+        <!-- Restaurant Suggestions -->
+        <TextView
+            android:id="@+id/restaurantSuggestions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="-- Restaurant Suggestions --"
+            android:padding="8dp"
+            android:textSize="18sp"
+            android:gravity="center" />
+
+        <!-- Refresh Button -->
+        <Button
+            android:id="@+id/refreshButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Refresh Suggestions"
+            android:layout_marginTop="16dp" />
+    </LinearLayout>
+</ScrollView>

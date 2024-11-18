@@ -6,116 +6,125 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:divider="?android:attr/dividerVertical"
-        android:showDividers="middle"
-        android:dividerPadding="16dp">
+        android:orientation="vertical">
 
-        <!-- Indoor Activity Section -->
+        <!-- Title -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Select Indoor Activity"
-            android:textSize="18sp"
-            android:layout_marginTop="8dp" />
+            android:text="Travel Companion - Just for U"
+            android:background="#FFC107"
+            android:padding="16dp"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
+        <!-- Name Input -->
+        <EditText
+            android:id="@+id/userNameInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter your Name"
+            android:layout_marginTop="16dp" />
+
+        <!-- Indoor Activity -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Indoor Activity"
+            android:layout_marginTop="16dp" />
         <Spinner
             android:id="@+id/indoorSpinner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp" />
+            android:layout_height="wrap_content" />
 
-        <!-- Outdoor Activity Section -->
+        <!-- Outdoor Activity -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Select Outdoor Activity"
-            android:textSize="18sp"
-            android:layout_marginTop="8dp" />
-
+            android:text="Outdoor Activity"
+            android:layout_marginTop="16dp" />
         <Spinner
             android:id="@+id/outdoorSpinner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp" />
+            android:layout_height="wrap_content" />
 
-        <!-- Meal Time Section -->
+        <!-- Breakfast Time -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Enter Meal Times"
-            android:textSize="18sp"
-            android:layout_marginBottom="8dp" />
-
-        <EditText
-            android:id="@+id/breakfastTime"
+            android:text="Breakfast Time"
+            android:layout_marginTop="16dp" />
+        <TimePicker
+            android:id="@+id/breakfastTimePicker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter Breakfast Time (e.g., 8:00 AM)"
-            android:layout_marginBottom="16dp" />
+            android:timePickerMode="spinner" />
 
-        <EditText
-            android:id="@+id/lunchTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter Lunch Time (e.g., 12:00 PM)"
-            android:layout_marginBottom="16dp" />
-
-        <EditText
-            android:id="@+id/dinnerTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter Dinner Time (e.g., 7:00 PM)"
-            android:layout_marginBottom="32dp" />
-
-        <!-- Meal Selection Section -->
+        <!-- Lunch Time -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Select Meals"
-            android:textSize="18sp"
-            android:layout_marginBottom="8dp" />
+            android:text="Lunch Time"
+            android:layout_marginTop="16dp" />
+        <TimePicker
+            android:id="@+id/lunchTimePicker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:timePickerMode="spinner" />
 
+        <!-- Dinner Time -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Breakfast" />
+            android:text="Dinner Time"
+            android:layout_marginTop="16dp" />
+        <TimePicker
+            android:id="@+id/dinnerTimePicker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:timePickerMode="spinner" />
 
+        <!-- Breakfast Meal -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Breakfast Meal"
+            android:layout_marginTop="16dp" />
         <Spinner
             android:id="@+id/breakfastSpinner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp" />
+            android:layout_height="wrap_content" />
 
+        <!-- Lunch Meal -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lunch" />
-
+            android:text="Lunch Meal"
+            android:layout_marginTop="16dp" />
         <Spinner
             android:id="@+id/lunchSpinner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp" />
+            android:layout_height="wrap_content" />
 
+        <!-- Dinner Meal -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Dinner" />
-
+            android:text="Dinner Meal"
+            android:layout_marginTop="16dp" />
         <Spinner
             android:id="@+id/dinnerSpinner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp" />
+            android:layout_height="wrap_content" />
 
         <!-- Submit Button -->
         <Button
             android:id="@+id/submitButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Submit"
-            android:layout_marginTop="24dp"
-            android:layout_gravity="center_horizontal" />
+            android:layout_marginTop="32dp" />
     </LinearLayout>
 </ScrollView>
