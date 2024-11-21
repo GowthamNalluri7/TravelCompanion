@@ -7,7 +7,6 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,7 +40,7 @@ import okhttp3.Response;
 
 public class MainPageActivity extends AppCompatActivity {
 
-    private static final String WEATHER_API_KEY = "ef10fcced2ae0f630a729efe0bf52d2c"; // Replace with your OpenWeatherMap API key
+    private static final String WEATHER_API_KEY = "ef10fcced2ae0f630a729efe0bf52d2c";
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private FusedLocationProviderClient fusedLocationClient;
     private TextView greetingTextView, weatherTextView, locationTextView;

@@ -27,6 +27,15 @@
             android:padding="8dp"
             android:textSize="18sp" />
 
+        <TextView
+            android:id="@+id/weatherConditionsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Weather Conditions: Sunny"
+            android:textSize="18sp"
+            android:layout_marginTop="4dp"
+            android:textColor="#666" />
+
         <!-- Activity Suggestions -->
         <TextView
             android:id="@+id/activityTextView"

@@ -25,6 +25,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONException;
@@ -44,7 +46,7 @@ import okhttp3.Response;
 
 public class SuggestionsActivity extends AppCompatActivity {
 
-    private TextView locationTextView, temperatureTextView, activityTextView, restaurantTextView;
+    private TextView locationTextView, temperatureTextView, activityTextView, restaurantTextView, weatherConditionsTextView;
     private Button refreshButton;
 
     // Data structures for recommendations
@@ -63,9 +65,11 @@ public class SuggestionsActivity extends AppCompatActivity {
         // Initialize views
         locationTextView = findViewById(R.id.locationTextView);
         temperatureTextView = findViewById(R.id.temperatureTextView);
+        weatherConditionsTextView = findViewById(R.id.weatherConditionsTextView);
         activityTextView = findViewById(R.id.activityTextView);
         restaurantTextView = findViewById(R.id.restaurantTextView);
         refreshButton = findViewById(R.id.refreshButton);
+
 
         // Populate static data
         PopulateData();
@@ -145,14 +149,25 @@ public class SuggestionsActivity extends AppCompatActivity {
                     try {
                         JSONObject json = new JSONObject(responseData);
                         double temperature = json.getJSONObject("main").getDouble("temp");
+                        String weatherCondition = "Sunny"; // Static value
+                        // String weatherCondition = "Cloudy";
+                        // String weatherCondition = "Rainy";
+                        // String weatherCondition = "Snowy";
 
-                        runOnUiThread(() -> temperatureTextView.setText("Live Temperature: " + temperature + "°C"));
+                        runOnUiThread(() -> {
+                            temperatureTextView.setText("Live Temperature: " + temperature + "°C");
+                            weatherConditionsTextView.setText("Weather Conditions: " + weatherCondition);
+                        });
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        runOnUiThread(() -> temperatureTextView.setText("Live Temperature: Unavailable"));
+                        runOnUiThread(() -> {
+                            Toast.makeText(SuggestionsActivity.this, "Error parsing temperature data", Toast.LENGTH_SHORT).show();
+                        });
                     }
                 } else {
-                    runOnUiThread(() -> temperatureTextView.setText("Live Temperature: Unavailable"));
+                    runOnUiThread(() -> {
+                        Toast.makeText(SuggestionsActivity.this, "Failed to fetch temperature", Toast.LENGTH_SHORT).show();
+                    });
                 }
             }
         });
