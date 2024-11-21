@@ -20,7 +20,7 @@
 
         <!-- Weather -->
         <TextView
-            android:id="@+id/weatherTextView"
+            android:id="@+id/temperatureTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Live Temperature: Loading..."
@@ -29,7 +29,7 @@
 
         <!-- Activity Suggestions -->
         <TextView
-            android:id="@+id/activitySuggestions"
+            android:id="@+id/activityTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="-- Activity Suggestions --"
@@ -39,7 +39,7 @@
 
         <!-- Restaurant Suggestions -->
         <TextView
-            android:id="@+id/restaurantSuggestions"
+            android:id="@+id/restaurantTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="-- Restaurant Suggestions --"
