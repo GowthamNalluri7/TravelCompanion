@@ -6,6 +6,17 @@
     android:padding="16dp"
     android:background="#F9F9F9">
 
+    <TextView
+        android:id="@+id/timeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="07:00 AM"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif"
+        android:textColor="#666"
+        android:gravity="end"
+        android:paddingEnd="8dp" />
+
     <!-- Location and Weather -->
     <TextView
         android:id="@+id/locationTextView"

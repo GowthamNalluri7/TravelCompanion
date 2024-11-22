@@ -115,6 +115,7 @@
 
 package com.example.travelcompanion;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -136,8 +137,10 @@ public class SuggestionsActivity extends AppCompatActivity {
     private RecyclerView activityRecyclerView, restaurantRecyclerView;
     private Button refreshButton;
 
-    private String fixedLocation = "Griffintown"; // Fixed location
+    private String fixedLocation = "Old Montreal"; // Fixed location
     private String fixedWeather = "Snowy"; // Fixed weather
+
+    private String fixedTime = "07:00 AM";
     private Manager manager;
     private List<Activity> activityRecommendations;
     private List<Restaurant> restaurantRecommendations;
@@ -170,16 +173,18 @@ public class SuggestionsActivity extends AppCompatActivity {
 
     private void fetchRecommendations() {
         // Example user inputs
-        String time = "12:00PM"; // Static time input
-        String breakfast = "8:00AM";
-        String lunch = "1:00PM";
-        String dinner = "7:00PM";
-        String cuisineType = "AMERICAN";
-        double avgPrice = 20.0;
-        double rating = 4.0;
-        int distance = 500; // Static distance in meters
+        Intent intent = getIntent();
+//        String time = intent.getStringExtra("currentTime"); // Dynamic time input
+        String time = fixedTime;
+        String breakfast = intent.getStringExtra("breakfastTime");
+        String lunch = intent.getStringExtra("lunchTime");
+        String dinner = intent.getStringExtra("dinnerTime");
+        String cuisineType = intent.getStringExtra("preferredCuisine");
+        double avgPrice = intent.getDoubleExtra("avgCost", 0.0);
+        double rating = intent.getDoubleExtra("preferredRating", 0.0);
+        int distance = intent.getIntExtra("maxDistance", 0); // Dynamic distance in meters
         String activityPreference = fixedWeather.equalsIgnoreCase("Rainy") ? "Indoor" : "Outdoor"; // Weather-based preference
-        int ambiance = 3;
+        int ambiance = intent.getIntExtra("preferredAmbience", 0);
 
         // Call Manager to get recommendations
         manager.Manage(fixedWeather, fixedLocation, time, breakfast, lunch, dinner, cuisineType, avgPrice, rating, distance, activityPreference, ambiance);

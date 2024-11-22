@@ -1,21 +1,25 @@
 package project;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 public class Manager {
     public List<Activity> FinalListActivity;
     public List<Restaurant> FinalListRestaurant;
 
+//    Logger logger = Logger.getLogger(Manager.class.getName());
     public void Manage(String Weather, String Location, String Time, String bkf, String lunch, String dinner, String UserCType,
                        double PAvgPrice, double Prating, int pdistance, String UserActP, int Pambiance) {
         // Create instances of ActivityFinder and RestaurantFinder
         ActivityFinder af = new ActivityFinder();
         RestaurantFinder rf = new RestaurantFinder();
 
+
         // Load activities and restaurants
         rf.load();
         af.load();
 
+//        logger.info("displaying bkf " +bkf);
         // Activity Recommendations
         ActivityRecommender Ar = new ActivityRecommender();
         UserPreferencesForActivities ActivityUser = new UserPreferencesForActivities(

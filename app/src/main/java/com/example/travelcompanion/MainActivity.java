@@ -11,7 +11,7 @@ import com.google.android.material.slider.Slider;
 
 public class MainActivity extends AppCompatActivity {
 
-    private EditText nameEditText, avgCostEditText, maxDistanceEditText;
+    public EditText nameEditText, avgCostEditText, maxDistanceEditText;
     private Slider indoorOutdoorSlider;
     private Spinner cuisineTypeSpinner;
     private SeekBar ratingSeekBar, ambienceSeekBar;
@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         // Initialize UI Elements
         titleTextView = findViewById(R.id.titleTextView);
         nameEditText = findViewById(R.id.nameEditText);
+        //System.out.println(nameEditText);
         indoorOutdoorSlider = findViewById(R.id.indoorOutdoorSlider);
         cuisineTypeSpinner = findViewById(R.id.cuisineTypeSpinner);
         ratingSeekBar = findViewById(R.id.ratingSeekBar);
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Populate Cuisine Type Dropdown
-        String[] cuisines = {"Italian", "Chinese", "Mexican", "Indian", "Japanese"}; // Replace with dynamic data
+        String[] cuisines = {"QUEBECOISE", "FRENCH", "ITALIAN", "AMERICAN"}; // Replace with dynamic data
         ArrayAdapter<String> cuisineAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, cuisines);
         cuisineAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         cuisineTypeSpinner.setAdapter(cuisineAdapter);
@@ -91,7 +92,8 @@ public class MainActivity extends AppCompatActivity {
         submitButton.setOnClickListener(v -> {
             if (validateInputs()) {
                 // Pass Data to the Next Page
-                Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
+//                Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
+                Intent intent = new Intent(MainActivity.this, SuggestionsActivity.class);
                 intent.putExtra("userName", nameEditText.getText().toString());
                 intent.putExtra("indoorOutdoor", indoorOutdoorSlider.getValue() >= 50); // True for Outdoor
                 intent.putExtra("preferredCuisine", cuisineTypeSpinner.getSelectedItem().toString());

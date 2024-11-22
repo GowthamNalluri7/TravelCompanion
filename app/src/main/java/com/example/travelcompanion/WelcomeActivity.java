@@ -30,6 +30,9 @@ public class WelcomeActivity extends AppCompatActivity {
             welcomeMessage.setText("Hello User\n\nWelcome to your Personal Companion\n\nHope You are Having a Great Day\n\nI am here to assist you today\n\nClick below to START");
         }
 
+
+        System.out.println("");
+
         // Set button click listener
         startButton.setOnClickListener(v -> {
             // Trigger "TheMainData()" function and navigate to SuggestionsActivity
