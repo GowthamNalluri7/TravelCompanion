@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         submitButton.setOnClickListener(v -> {
             if (validateInputs()) {
                 // Pass Data to the Next Page
-                Intent intent = new Intent(MainActivity.this, MainPageActivity.class);
+                Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
                 intent.putExtra("userName", nameEditText.getText().toString());
                 intent.putExtra("indoorOutdoor", indoorOutdoorSlider.getValue() >= 50); // True for Outdoor
                 intent.putExtra("preferredCuisine", cuisineTypeSpinner.getSelectedItem().toString());

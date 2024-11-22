@@ -1,67 +1,74 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#F9F9F9">
 
-    <LinearLayout
+    <!-- Location and Weather -->
+    <TextView
+        android:id="@+id/locationTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:text="Location: Griffintown"
+        android:textSize="18sp"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="#333"
+        android:paddingBottom="8dp" />
 
-        <!-- Fixed Location Display -->
-        <TextView
-            android:id="@+id/locationTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Location: Plateau Mont-Royal"
-            android:padding="8dp"
-            android:textSize="18sp"
-            android:textColor="#000" />
+    <TextView
+        android:id="@+id/weatherConditionsTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Weather Conditions: Snowy"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif"
+        android:textColor="#666"
+        android:paddingBottom="16dp" />
 
+    <!-- Activities Section -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Activities You Might Enjoy"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="#333"
+        android:paddingBottom="8dp" />
 
-        <TextView
-            android:id="@+id/weatherConditionsTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Weather Conditions: Sunny"
-            android:textSize="18sp"
-            android:layout_marginTop="4dp"
-            android:textColor="#666" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/activityRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical" />
 
-        <!-- Activity Suggestions -->
-        <TextView
-            android:id="@+id/activityTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="-- Activity Suggestions --"
-            android:padding="8dp"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:textColor="#000" />
+    <!-- Restaurants Section -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Restaurants Recommended for You"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="#333"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp" />
 
-        <!-- Restaurant Suggestions -->
-        <TextView
-            android:id="@+id/restaurantTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="-- Restaurant Suggestions --"
-            android:padding="8dp"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:textColor="#000" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/restaurantRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical" />
 
-        <!-- Refresh Button -->
-        <Button
-            android:id="@+id/refreshButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Refresh Suggestions"
-            android:layout_marginTop="16dp"
-            android:backgroundTint="#6200EE"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp" />
-    </LinearLayout>
-</ScrollView>
+    <!-- Buttons -->
+    <Button
+        android:id="@+id/refreshButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#6200EE"
+        android:textColor="#FFF"
+        android:text="Refresh Suggestions" />
+</LinearLayout>
