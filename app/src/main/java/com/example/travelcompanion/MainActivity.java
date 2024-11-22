@@ -2,84 +2,180 @@ package com.example.travelcompanion;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.slider.Slider;
+
 public class MainActivity extends AppCompatActivity {
 
-    private EditText userNameInput;
-    private Spinner indoorSpinner, outdoorSpinner, breakfastSpinner, lunchSpinner, dinnerSpinner;
+    private EditText nameEditText, avgCostEditText, maxDistanceEditText;
+    private Slider indoorOutdoorSlider;
+    private Spinner cuisineTypeSpinner;
+    private SeekBar ratingSeekBar, ambienceSeekBar;
+    private TextView ratingValueTextView, ambienceValueTextView;
     private TimePicker breakfastTimePicker, lunchTimePicker, dinnerTimePicker;
     private Button submitButton;
+    private TextView titleTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Initialize UI components
-        userNameInput = findViewById(R.id.userNameInput);
-        indoorSpinner = findViewById(R.id.indoorSpinner);
-        outdoorSpinner = findViewById(R.id.outdoorSpinner);
-        breakfastSpinner = findViewById(R.id.breakfastSpinner);
-        lunchSpinner = findViewById(R.id.lunchSpinner);
-        dinnerSpinner = findViewById(R.id.dinnerSpinner);
+        // Initialize UI Elements
+        titleTextView = findViewById(R.id.titleTextView);
+        nameEditText = findViewById(R.id.nameEditText);
+        indoorOutdoorSlider = findViewById(R.id.indoorOutdoorSlider);
+        cuisineTypeSpinner = findViewById(R.id.cuisineTypeSpinner);
+        ratingSeekBar = findViewById(R.id.ratingSeekBar);
+        ratingValueTextView = findViewById(R.id.ratingValueTextView);
+        avgCostEditText = findViewById(R.id.avgCostEditText);
+        maxDistanceEditText = findViewById(R.id.maxDistanceEditText);
+        ambienceSeekBar = findViewById(R.id.ambienceSeekBar);
+        ambienceValueTextView = findViewById(R.id.ambienceValueTextView);
         breakfastTimePicker = findViewById(R.id.breakfastTimePicker);
         lunchTimePicker = findViewById(R.id.lunchTimePicker);
         dinnerTimePicker = findViewById(R.id.dinnerTimePicker);
         submitButton = findViewById(R.id.submitButton);
 
-        // Setup Spinners
-        setupSpinner(indoorSpinner, new String[]{"", "Chess", "Table Tennis", "Badminton"});
-        setupSpinner(outdoorSpinner, new String[]{"", "Football", "Hiking", "Cycling"});
-        setupSpinner(breakfastSpinner, new String[]{"", "Pancakes", "Omelette", "Smoothie"});
-        setupSpinner(lunchSpinner, new String[]{"", "Pizza", "Burger", "Salad"});
-        setupSpinner(dinnerSpinner, new String[]{"", "Pasta", "Soup", "Steak"});
+        // Title Setup
+        titleTextView.setText("Travel Companion - Just For U");
 
-        // Submit Button Click
-        submitButton.setOnClickListener(v -> validateAndProceed());
-    }
+        // Indoor/Outdoor Slider Setup
+        indoorOutdoorSlider.addOnChangeListener((slider, value, fromUser) -> {
+            String activityPreference = value < 50 ? "Indoor" : "Outdoor";
+            slider.setContentDescription(activityPreference);
+        });
 
-    private void setupSpinner(Spinner spinner, String[] items) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, items);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-    }
+        // Populate Cuisine Type Dropdown
+        String[] cuisines = {"Italian", "Chinese", "Mexican", "Indian", "Japanese"}; // Replace with dynamic data
+        ArrayAdapter<String> cuisineAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, cuisines);
+        cuisineAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        cuisineTypeSpinner.setAdapter(cuisineAdapter);
 
-    private void validateAndProceed() {
-        String userName = userNameInput.getText().toString();
-        String indoorActivity = (String) indoorSpinner.getSelectedItem();
-        String outdoorActivity = (String) outdoorSpinner.getSelectedItem();
-        String breakfastMeal = (String) breakfastSpinner.getSelectedItem();
-        String lunchMeal = (String) lunchSpinner.getSelectedItem();
-        String dinnerMeal = (String) dinnerSpinner.getSelectedItem();
+        // Rating SeekBar Setup
+        ratingSeekBar.setMax(5);
+        ratingSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                ratingValueTextView.setText("Rating: " + progress);
+            }
 
-        int breakfastHour = breakfastTimePicker.getHour();
-        int breakfastMinute = breakfastTimePicker.getMinute();
-        int lunchHour = lunchTimePicker.getHour();
-        int lunchMinute = lunchTimePicker.getMinute();
-        int dinnerHour = dinnerTimePicker.getHour();
-        int dinnerMinute = dinnerTimePicker.getMinute();
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+
+        // Ambience SeekBar Setup
+        ambienceSeekBar.setMax(5);
+        ambienceSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                ambienceValueTextView.setText("Ambience: " + progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
 
         // Validate Inputs
-        if (userName.isEmpty() || indoorActivity.isEmpty() || outdoorActivity.isEmpty()
-                || breakfastMeal.isEmpty() || lunchMeal.isEmpty() || dinnerMeal.isEmpty()) {
-            Toast.makeText(this, "Please fill all fields!", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        setupValidation();
 
-        if (isInvalidTimeSequence(breakfastHour, breakfastMinute, lunchHour, lunchMinute, dinnerHour, dinnerMinute)) {
-            Toast.makeText(this, "Times must be in sequential order!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Pass Data to Next Activity
-        Intent intent = new Intent(this, WelcomeActivity.class);
-        intent.putExtra("userName", userName);
-        startActivity(intent);
+        // Submit Button Listener
+        submitButton.setOnClickListener(v -> {
+            if (validateInputs()) {
+                // Pass Data to the Next Page
+                Intent intent = new Intent(MainActivity.this, MainPageActivity.class);
+                intent.putExtra("userName", nameEditText.getText().toString());
+                intent.putExtra("indoorOutdoor", indoorOutdoorSlider.getValue() >= 50); // True for Outdoor
+                intent.putExtra("preferredCuisine", cuisineTypeSpinner.getSelectedItem().toString());
+                intent.putExtra("preferredRating", ratingSeekBar.getProgress());
+                intent.putExtra("avgCost", Double.parseDouble(avgCostEditText.getText().toString()));
+                intent.putExtra("maxDistance", Integer.parseInt(maxDistanceEditText.getText().toString()));
+                intent.putExtra("preferredAmbience", ambienceSeekBar.getProgress());
+                intent.putExtra("breakfastTime", getTimeFromPicker(breakfastTimePicker));
+                intent.putExtra("lunchTime", getTimeFromPicker(lunchTimePicker));
+                intent.putExtra("dinnerTime", getTimeFromPicker(dinnerTimePicker));
+                startActivity(intent);
+            }
+        });
     }
 
-    private boolean isInvalidTimeSequence(int bh, int bm, int lh, int lm, int dh, int dm) {
-        return (bh > lh || (bh == lh && bm >= lm)) || (lh > dh || (lh == dh && lm >= dm));
+    private void setupValidation() {
+        avgCostEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!s.toString().isEmpty() && Double.parseDouble(s.toString()) < 0.0) {
+                    avgCostEditText.setError("Average cost must be greater than or equal to 0.0");
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        maxDistanceEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!s.toString().isEmpty() && Integer.parseInt(s.toString()) < 0) {
+                    maxDistanceEditText.setError("Distance must be greater than or equal to 0");
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+    }
+
+    private boolean validateInputs() {
+        if (nameEditText.getText().toString().trim().isEmpty()) {
+            showToast("Please enter your name.");
+            return false;
+        }
+        if (cuisineTypeSpinner.getSelectedItem() == null) {
+            showToast("Please select a preferred cuisine.");
+            return false;
+        }
+        if (avgCostEditText.getText().toString().trim().isEmpty() || Double.parseDouble(avgCostEditText.getText().toString()) < 0.0) {
+            showToast("Please enter a valid average cost.");
+            return false;
+        }
+        if (maxDistanceEditText.getText().toString().trim().isEmpty() || Integer.parseInt(maxDistanceEditText.getText().toString()) < 0) {
+            showToast("Please enter a valid maximum distance.");
+            return false;
+        }
+        if (!validateTimes()) {
+            showToast("Please ensure meal times are in increasing order.");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateTimes() {
+        int breakfastTime = breakfastTimePicker.getHour() * 60 + breakfastTimePicker.getMinute();
+        int lunchTime = lunchTimePicker.getHour() * 60 + lunchTimePicker.getMinute();
+        int dinnerTime = dinnerTimePicker.getHour() * 60 + dinnerTimePicker.getMinute();
+        return breakfastTime < lunchTime && lunchTime < dinnerTime;
+    }
+
+    private String getTimeFromPicker(TimePicker timePicker) {
+        int hour = timePicker.getHour();
+        int minute = timePicker.getMinute();
+        String amPm = (hour < 12) ? "AM" : "PM";
+        if (hour == 0) hour = 12;
+        if (hour > 12) hour -= 12;
+        return String.format("%02d:%02d %s", hour, minute, amPm);
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

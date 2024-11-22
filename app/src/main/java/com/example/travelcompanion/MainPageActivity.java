@@ -1,7 +1,6 @@
 package com.example.travelcompanion;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -38,23 +37,27 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import project.Manager;
+import project.Activity;
+import project.Restaurant;
+
 public class MainPageActivity extends AppCompatActivity {
 
     private static final String WEATHER_API_KEY = "ef10fcced2ae0f630a729efe0bf52d2c";
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+
     private FusedLocationProviderClient fusedLocationClient;
     private TextView greetingTextView, weatherTextView, locationTextView;
     private RecyclerView restaurantRecyclerView, activityRecyclerView;
     private Button refreshButton, updateLocationButton;
 
     private Location currentLocation;
+    private String currentWeather = "SUNNY"; // Default weather
+    private String currentLocationName = "Mile End"; // Default location
 
-    // User preferences
-    private String indoorActivity;
-    private String outdoorActivity;
-    private String breakfastMeal;
-    private String lunchMeal;
-    private String dinnerMeal;
+    private Manager manager;
+    private List<Activity> activityRecommendations;
+    private List<Restaurant> restaurantRecommendations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,30 +67,27 @@ public class MainPageActivity extends AppCompatActivity {
         // Initialize views
         greetingTextView = findViewById(R.id.greetingTextView);
         weatherTextView = findViewById(R.id.weatherTextView);
+        locationTextView = findViewById(R.id.locationTextView);
         restaurantRecyclerView = findViewById(R.id.restaurantRecyclerView);
         activityRecyclerView = findViewById(R.id.activityRecyclerView);
         refreshButton = findViewById(R.id.refreshButton);
         updateLocationButton = findViewById(R.id.updateLocationButton);
-        locationTextView = findViewById(R.id.locationTextView);
 
-        // Set up location client
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
-        // Get user preferences from Intent
-        Intent intent = getIntent();
-        indoorActivity = intent.getStringExtra("indoorActivity");
-        outdoorActivity = intent.getStringExtra("outdoorActivity");
-        breakfastMeal = intent.getStringExtra("breakfastMeal");
-        lunchMeal = intent.getStringExtra("lunchMeal");
-        dinnerMeal = intent.getStringExtra("dinnerMeal");
-
-        // Set up RecyclerViews for recommendations
+        // Set up RecyclerViews
         restaurantRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         activityRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Load initial data and location updates
-        updateUserContext();
+        // Initialize location client
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        // Initialize manager
+        manager = new Manager();
+
+        // Fetch current location
         getCurrentLocation();
+
+        // Load initial data
+        updateUserContext();
 
         // Refresh recommendations on button click
         refreshButton.setOnClickListener(v -> updateUserContext());
@@ -104,26 +104,21 @@ public class MainPageActivity extends AppCompatActivity {
             return;
         }
 
-        // Request location updates to get current location whenever the app opens
+        // Request location updates
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(10 * 60 * 1000); // Update location every 10 minutes
+        locationRequest.setInterval(10 * 60 * 1000); // Update every 10 minutes
 
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
     }
 
-    private LocationCallback locationCallback = new LocationCallback() {
+    private final LocationCallback locationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(LocationResult locationResult) {
-            if (locationResult == null) {
-                return;
-            }
+            if (locationResult == null) return;
             for (Location location : locationResult.getLocations()) {
-                if (currentLocation == null || currentLocation.distanceTo(location) > 500) { // Update if user moved more than 500 meters
-                    currentLocation = location;
-                    updateUserContext();
-                    updateLocationText(location);
-                }
+                currentLocation = location;
+                updateLocationText(location);
             }
         }
     };
@@ -134,83 +129,15 @@ public class MainPageActivity extends AppCompatActivity {
             List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
             if (addresses != null && !addresses.isEmpty()) {
                 Address address = addresses.get(0);
-                String city = address.getLocality(); // Get the city name
-                String province = address.getAdminArea(); // Get the province/state name
-
-                // Format as "City, Province"
-                String locationText = (city != null ? city : "Unknown City") + ", " +
-                        (province != null ? province : "Unknown Province");
-                locationTextView.setText("Current Location: " + locationText);
+                currentLocationName = address.getLocality() != null ? address.getLocality() : "Unknown Location";
+                locationTextView.setText("Current Location: " + currentLocationName);
             } else {
-                locationTextView.setText("Location: Unknown");
+                locationTextView.setText("Current Location: Unknown");
             }
         } catch (IOException e) {
             e.printStackTrace();
             locationTextView.setText("Location: Unavailable");
         }
-    }
-
-    private void updateUserContext() {
-        // Update location
-        fetchNearbyRecommendations(currentLocation);
-
-        // Update time-based greeting
-        updateTimeBasedGreeting();
-
-        // Fetch weather based on location
-        if (currentLocation != null) {
-            fetchWeather(currentLocation);
-        }
-    }
-
-    private void fetchNearbyRecommendations(Location location) {
-        List<String> restaurantRecommendations = new ArrayList<>();
-        List<String> activityRecommendations = new ArrayList<>();
-
-        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-
-        if (hour >= 6 && hour < 10) {
-            restaurantRecommendations.add("Sunrise Cafe - Serving " + breakfastMeal);
-            restaurantRecommendations.add("Morning Delight - Cozy breakfast spot");
-            restaurantRecommendations.add("Brunch Hub - Ideal for " + breakfastMeal);
-            activityRecommendations.add("Yoga Studio - Relaxing morning activity");
-            activityRecommendations.add("Early Bird Gym - Start your day right");
-            activityRecommendations.add("Botanical Gardens - Morning stroll");
-        } else if (hour >= 12 && hour < 16) {
-            restaurantRecommendations.add("Spicy Biryani House - Great for " + lunchMeal);
-            restaurantRecommendations.add("Rice Bowl - Offers fried rice options");
-            restaurantRecommendations.add("Asian Delights - Known for rice dishes");
-            activityRecommendations.add("Central Park - Afternoon picnic");
-            activityRecommendations.add("City Sports Complex - Play " + outdoorActivity);
-            activityRecommendations.add("Museum Visit - Afternoon exploration");
-        } else if (hour >= 16 && hour < 19) {
-            restaurantRecommendations.add("Snack Shack - Perfect for snacks");
-            restaurantRecommendations.add("Coffee Corner - Afternoon coffee spot");
-            restaurantRecommendations.add("Bakery Bliss - Fresh pastries");
-            activityRecommendations.add("Indoor Game Zone - Play " + indoorActivity);
-            activityRecommendations.add("Art Studio - Evening art sessions");
-            activityRecommendations.add("Shopping Mall - Evening shopping");
-        } else if (hour >= 19 && hour < 23) {
-            restaurantRecommendations.add("Dinner Hub - Best for " + dinnerMeal);
-            restaurantRecommendations.add("Steakhouse - Known for gourmet dishes");
-            restaurantRecommendations.add("Fusion Cuisine - Ideal for rice dishes");
-            activityRecommendations.add("Fitness Center - Evening workout");
-            activityRecommendations.add("Bowling Alley - Fun indoor games");
-            activityRecommendations.add("Theater - Evening shows");
-        }
-
-        RecommendationAdapter restaurantAdapter = new RecommendationAdapter(restaurantRecommendations);
-        RecommendationAdapter activityAdapter = new RecommendationAdapter(activityRecommendations);
-
-        restaurantRecyclerView.setAdapter(restaurantAdapter);
-        activityRecyclerView.setAdapter(activityAdapter);
-    }
-
-    private void updateTimeBasedGreeting() {
-        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        String greeting = (hour >= 5 && hour < 12) ? "Good Morning" :
-                (hour >= 12 && hour < 18) ? "Good Afternoon" : "Good Evening";
-        greetingTextView.setText(greeting + ", User!");
     }
 
     private void fetchWeather(Location location) {
@@ -233,14 +160,11 @@ public class MainPageActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    String responseData = response.body().string();
                     try {
-                        JSONObject json = new JSONObject(responseData);
-                        String weatherDescription = json.getJSONArray("weather").getJSONObject(0).getString("description");
+                        JSONObject json = new JSONObject(response.body().string());
+                        currentWeather = json.getJSONArray("weather").getJSONObject(0).getString("description");
                         double temperature = json.getJSONObject("main").getDouble("temp");
-
-                        // Update the weather information on the UI
-                        runOnUiThread(() -> weatherTextView.setText("Weather: " + weatherDescription + ", " + temperature + "°C"));
+                        runOnUiThread(() -> weatherTextView.setText("Weather: " + currentWeather + ", " + temperature + "°C"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                         runOnUiThread(() -> weatherTextView.setText("Weather: Unavailable"));
@@ -252,11 +176,49 @@ public class MainPageActivity extends AppCompatActivity {
         });
     }
 
-    // Handle location permissions
+    private void updateUserContext() {
+        // Simulate user preferences
+        String time = Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + ":00";
+        String breakfast = "8:00AM", lunch = "1:00PM", dinner = "8:00PM";
+        String cuisineType = "AMERICAN";
+        double avgPrice = 25.0;
+        double rating = 4.5;
+        int distance = 500;
+        String activityPreference = "Outdoor";
+        int ambiance = 3;
+
+        // Pass preferences to manager
+        manager.Manage(currentWeather, currentLocationName, time, breakfast, lunch, dinner, cuisineType, avgPrice, rating, distance, activityPreference, ambiance);
+
+        // Fetch recommendations
+        activityRecommendations = manager.FinalListActivity;
+        restaurantRecommendations = manager.FinalListRestaurant;
+
+        // Display recommendations
+        displayRecommendations();
+    }
+
+    private void displayRecommendations() {
+        List<String> activityNames = new ArrayList<>();
+        for (Activity activity : activityRecommendations) {
+            activityNames.add(activity.name + " - Rating: " + activity.rating);
+        }
+
+        List<String> restaurantNames = new ArrayList<>();
+        for (Restaurant restaurant : restaurantRecommendations) {
+            restaurantNames.add(restaurant.name + " - Ambiance: " + restaurant.ambiance);
+        }
+
+        RecommendationAdapter activityAdapter = new RecommendationAdapter(activityNames);
+        RecommendationAdapter restaurantAdapter = new RecommendationAdapter(restaurantNames);
+
+        activityRecyclerView.setAdapter(activityAdapter);
+        restaurantRecyclerView.setAdapter(restaurantAdapter);
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getCurrentLocation();

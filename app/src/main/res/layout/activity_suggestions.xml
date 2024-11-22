@@ -9,23 +9,16 @@
         android:orientation="vertical"
         android:gravity="center">
 
-        <!-- Location -->
+        <!-- Fixed Location Display -->
         <TextView
             android:id="@+id/locationTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Location: Loading..."
+            android:text="Location: Plateau Mont-Royal"
             android:padding="8dp"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:textColor="#000" />
 
-        <!-- Weather -->
-        <TextView
-            android:id="@+id/temperatureTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Live Temperature: Loading..."
-            android:padding="8dp"
-            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/weatherConditionsTextView"
@@ -44,7 +37,9 @@
             android:text="-- Activity Suggestions --"
             android:padding="8dp"
             android:textSize="18sp"
-            android:gravity="center" />
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textColor="#000" />
 
         <!-- Restaurant Suggestions -->
         <TextView
@@ -54,7 +49,9 @@
             android:text="-- Restaurant Suggestions --"
             android:padding="8dp"
             android:textSize="18sp"
-            android:gravity="center" />
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textColor="#000" />
 
         <!-- Refresh Button -->
         <Button
@@ -62,6 +59,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Refresh Suggestions"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#6200EE"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
     </LinearLayout>
 </ScrollView>
