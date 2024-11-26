@@ -123,9 +123,12 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import project.Activity;
 import project.Manager;
@@ -133,6 +136,10 @@ import project.Restaurant;
 
 public class SuggestionsActivity extends AppCompatActivity {
 
+    private String getCurrentTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a"); // Format as HH:MM AM/PM
+        return sdf.format(Calendar.getInstance().getTime());
+    }
     private TextView locationTextView, weatherConditionsTextView;
     private RecyclerView activityRecyclerView, restaurantRecyclerView;
     private Button refreshButton;
@@ -140,16 +147,24 @@ public class SuggestionsActivity extends AppCompatActivity {
     private String fixedLocation = "Old Montreal"; // Fixed location
     private String fixedWeather = "Snowy"; // Fixed weather
 
-    private String fixedTime = "07:00 AM";
+//    private String fixedTime = "07:00 AM";
+    private String fixedTime = getCurrentTime();
     private Manager manager;
     private List<Activity> activityRecommendations;
     private List<Restaurant> restaurantRecommendations;
+    Logger logger = Logger.getLogger(SuggestionsActivity.class.getName());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_suggestions);
 
+
+        // Find the TextView by its ID
+        TextView timeTextView = findViewById(R.id.timeTextView);
+
+        // Get current time and set it
+        timeTextView.setText(getCurrentTime());
         // Initialize views
         locationTextView = findViewById(R.id.locationTextView);
         weatherConditionsTextView = findViewById(R.id.weatherConditionsTextView);
@@ -202,12 +217,18 @@ public class SuggestionsActivity extends AppCompatActivity {
         locationTextView.setText("Location: " + fixedLocation);
         weatherConditionsTextView.setText("Weather Conditions: " + fixedWeather);
 
+//        for (Activity a: activityRecommendations) {
+//            System.out.println(a);
+//        }
+//        logger.info("displaying activities " +activityRecommendations);
+
         // Set up Activity Adapter
         ActivityAdapter activityAdapter = new ActivityAdapter(activityRecommendations.subList(0, Math.min(3, activityRecommendations.size())));
         activityRecyclerView.setAdapter(activityAdapter);
 
         // Sort restaurants by cost and set up Restaurant Adapter
         restaurantRecommendations.sort(Comparator.comparingDouble(r -> r.averageCost));
+        
         RestaurantAdapter restaurantAdapter = new RestaurantAdapter(restaurantRecommendations.subList(0, Math.min(3, restaurantRecommendations.size())));
         restaurantRecyclerView.setAdapter(restaurantAdapter);
     }

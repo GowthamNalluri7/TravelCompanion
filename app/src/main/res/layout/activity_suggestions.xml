@@ -10,7 +10,7 @@
         android:id="@+id/timeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="07:00 AM"
+        android:text="Loading..."
         android:textSize="16sp"
         android:fontFamily="sans-serif"
         android:textColor="#666"

@@ -9,8 +9,8 @@ public class Restaurant implements Serializable {
     public int ambiance;
     public double averageCost;
     public double rating;
-    String cuisineType;  // Cuisine type as a string
-    Integer distance;    // Distance from the reference point (in meters)
+    public String cuisineType;  // Cuisine type as a string
+    public Integer distance;    // Distance from the reference point (in meters)
 
     public Restaurant(String name, String priceRange, boolean reservations, int ambiance, double averageCost, double rating, String cuisineType, Integer distance) {
         this.name = name;

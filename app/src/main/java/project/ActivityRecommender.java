@@ -1,8 +1,11 @@
 package project;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class ActivityRecommender {
+
+    Logger logger = Logger.getLogger(ActivityRecommender.class.getName());
 
     // Method to calculate cosine similarity between two vectors
     public static double calculateCosineSimilarity(double[] vector1, double[] vector2) {
@@ -26,6 +29,7 @@ public class ActivityRecommender {
         List<Activity> recommendedActivities = new ArrayList<>();
 
         // Prepare user preference vector (with normalized values)
+
         double[] userPreferenceVector = new double[4];
         
         // Outdoor Activity: Binary (1 for outdoor, 0 for indoor)
@@ -67,15 +71,17 @@ public class ActivityRecommender {
                                    (cosineSimilarity * 1);   // Distance weight
 
             // Print the similarity score
-            System.out.println("Activity: " + activity.name + " - Similarity Score: " + weightedScore);
+//            System.out.println("Activity: " + activity.name + " - Similarity Score: " + weightedScore);
 
             // If the cosine similarity score is above the threshold of 0.9, add to recommended activities
-            if (weightedScore > 9) {  // Threshold set to 0.9 for high match
+            if (weightedScore > 7) {  // Threshold set to 0.9 for high match
                 recommendedActivities.add(activity);
             }
         }
 
+//        logger.info("ACTIVITY__ activities " +recommendedActivities);
         return recommendedActivities;
+
     }
 
     // public static void main(String[] args) {

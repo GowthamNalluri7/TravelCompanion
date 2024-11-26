@@ -30,7 +30,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Restaurant restaurant = restaurants.get(position);
-        holder.restaurantTitle.setText(restaurant.name);
+        holder.restaurantTitle.setText(restaurant.name + "| " + restaurant.cuisineType);
         holder.restaurantDetails.setText("Ambiance: " + restaurant.ambiance + " | Rating: " + restaurant.rating + " | Cost: $" + restaurant.averageCost);
     }
 
