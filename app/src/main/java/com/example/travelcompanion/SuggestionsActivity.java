@@ -39,8 +39,8 @@ public class SuggestionsActivity extends AppCompatActivity {
     private RecyclerView activityRecyclerView, restaurantRecyclerView;
     private Button refreshButton;
 
-    private String fixedLocation = "Old Montreal"; // Fixed location
-    private String fixedWeather = "Sunny"; // Fixed weather
+    private String fixedLocation = "Griffintown"; // Fixed location
+    private String fixedWeather = "Cloudy"; // Fixed weather
     private String fixedTime = getCurrentTime();
 
     private Manager manager;

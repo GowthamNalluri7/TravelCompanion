@@ -36,20 +36,6 @@
             android:hint="Your Name"
             android:layout_marginBottom="16dp" />
 
-        <!-- Indoor/Outdoor Spinner -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Preferred Activity"
-            android:textSize="18sp"
-            android:layout_marginTop="16dp" />
-
-        <Spinner
-            android:id="@+id/indoorOutdoorSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp" />
-
         <!-- Preferred Cuisine -->
         <TextView
             android:layout_width="wrap_content"

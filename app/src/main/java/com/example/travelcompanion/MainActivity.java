@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
 
     public EditText nameEditText, avgCostEditText, maxDistanceEditText;
-    private Spinner cuisineTypeSpinner, indoorOutdoorSpinner;
+    private Spinner cuisineTypeSpinner;
     private SeekBar ratingSeekBar, ambienceSeekBar;
     private TextView ratingValueTextView, ambienceValueTextView;
     private TimePicker breakfastTimePicker, lunchTimePicker, dinnerTimePicker;
@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
         titleTextView = findViewById(R.id.titleTextView);
         nameEditText = findViewById(R.id.nameEditText);
         //System.out.println(nameEditText);
-        indoorOutdoorSpinner = findViewById(R.id.indoorOutdoorSpinner);
         cuisineTypeSpinner = findViewById(R.id.cuisineTypeSpinner);
         ratingSeekBar = findViewById(R.id.ratingSeekBar);
         ratingValueTextView = findViewById(R.id.ratingValueTextView);
@@ -42,12 +41,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Title Setup
         titleTextView.setText("Travel Companion - Just For U");
-
-        // Populate Indoor/Outdoor Spinner
-        String[] activityPreferences = {"Indoor", "Outdoor"};
-        ArrayAdapter<String> activityAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, activityPreferences);
-        activityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        indoorOutdoorSpinner.setAdapter(activityAdapter);
 
         // Populate Cuisine Type Dropdown
         String[] cuisines = {"QUEBECOISE", "FRENCH", "ITALIAN", "AMERICAN"}; // Replace with dynamic data
@@ -93,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
 //                Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
                 Intent intent = new Intent(MainActivity.this, SuggestionsActivity.class);
                 intent.putExtra("userName", nameEditText.getText().toString());
-                intent.putExtra("indoorOutdoor", indoorOutdoorSpinner.getSelectedItem().toString().equals("Outdoor")); // True for Outdoor
                 intent.putExtra("preferredCuisine", cuisineTypeSpinner.getSelectedItem().toString());
                 intent.putExtra("preferredRating", ratingSeekBar.getProgress());
                 intent.putExtra("avgCost", Double.parseDouble(avgCostEditText.getText().toString()));
