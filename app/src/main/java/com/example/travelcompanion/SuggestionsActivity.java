@@ -170,8 +170,8 @@ public class SuggestionsActivity extends AppCompatActivity {
         String lunch = intent.getStringExtra("lunchTime");
         String dinner = intent.getStringExtra("dinnerTime");
         String cuisineType = intent.getStringExtra("preferredCuisine");
-        double avgPrice = intent.getDoubleExtra("avgCost", 0.0);
-        double rating = intent.getDoubleExtra("preferredRating", 0.0);
+        double avgPrice = intent.getIntExtra("avgCost", 0);
+        double rating = intent.getIntExtra("preferredRating", 0);
         int distance = intent.getIntExtra("maxDistance", 0); // Dynamic distance in meters
         String activityPreference = fixedWeather.equalsIgnoreCase("Rainy") ? "Indoor" : "Outdoor"; // Weather-based preference
         int ambiance = intent.getIntExtra("preferredAmbience", 0);
