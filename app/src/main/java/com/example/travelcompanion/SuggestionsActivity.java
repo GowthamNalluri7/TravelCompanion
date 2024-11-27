@@ -124,6 +124,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import java.util.Comparator;
@@ -145,13 +146,15 @@ public class SuggestionsActivity extends AppCompatActivity {
     private Button refreshButton;
 
     private String fixedLocation = "Old Montreal"; // Fixed location
-    private String fixedWeather = "Snowy"; // Fixed weather
+    private String fixedWeather = "Sunny"; // Fixed weather
 
 //    private String fixedTime = "07:00 AM";
     private String fixedTime = getCurrentTime();
     private Manager manager;
     private List<Activity> activityRecommendations;
     private List<Restaurant> restaurantRecommendations;
+    private int currentActivityIndex = 0;
+    private int currentRestaurantIndex = 0;
     Logger logger = Logger.getLogger(SuggestionsActivity.class.getName());
 
     @Override
@@ -183,14 +186,67 @@ public class SuggestionsActivity extends AppCompatActivity {
         fetchRecommendations();
 
         // Refresh button functionality
-        refreshButton.setOnClickListener(v -> fetchRecommendations());
+//        refreshButton.setOnClickListener(v -> fetchRecommendations());
+        refreshButton.setOnClickListener(v -> refreshSuggestions());
+    }
+
+    private void refreshActivities() {
+        if (activityRecommendations == null || activityRecommendations.isEmpty()) {
+            // If there are no activities, don't refresh and log the case
+            logger.info("No activity recommendations available to refresh.");
+            return;
+        }
+
+        int activitySize = activityRecommendations.size();
+
+        // Get the next 2 activities
+        List<Activity> nextActivities = new ArrayList<>();
+        for (int i = 0; i < 2 && i < activitySize; i++) {
+            nextActivities.add(activityRecommendations.get((currentActivityIndex + i) % activitySize));
+        }
+
+        // Update the RecyclerView with the new activities
+        ActivityAdapter activityAdapter = new ActivityAdapter(nextActivities);
+        activityRecyclerView.setAdapter(activityAdapter);
+
+        // Update the current activity index
+        currentActivityIndex = (currentActivityIndex + 2) % activitySize;
+    }
+
+
+    // Method to refresh restaurant recommendations
+    private void refreshRestaurants() {
+        if (restaurantRecommendations == null || restaurantRecommendations.isEmpty()) {
+            // If there are no restaurants, don't refresh and log the case
+            logger.info("No restaurant recommendations available to refresh.");
+            return;
+        }
+
+        int restaurantSize = restaurantRecommendations.size();
+
+        // Get the next restaurant
+        List<Restaurant> nextRestaurant = new ArrayList<>();
+        nextRestaurant.add(restaurantRecommendations.get(currentRestaurantIndex % restaurantSize));
+
+        // Update the RecyclerView with the new restaurant
+        RestaurantAdapter restaurantAdapter = new RestaurantAdapter(nextRestaurant);
+        restaurantRecyclerView.setAdapter(restaurantAdapter);
+
+        // Update the current restaurant index
+        currentRestaurantIndex = (currentRestaurantIndex + 1) % restaurantSize;
+    }
+
+
+    // Refresh button handler
+    private void refreshSuggestions() {
+        refreshActivities();    // Refresh activity recommendations
+        refreshRestaurants();  // Refresh restaurant recommendations
     }
 
     private void fetchRecommendations() {
         // Example user inputs
         Intent intent = getIntent();
 //        String time = intent.getStringExtra("currentTime"); // Dynamic time input
-        String time = fixedTime;
         String breakfast = intent.getStringExtra("breakfastTime");
         String lunch = intent.getStringExtra("lunchTime");
         String dinner = intent.getStringExtra("dinnerTime");
@@ -202,7 +258,7 @@ public class SuggestionsActivity extends AppCompatActivity {
         int ambiance = intent.getIntExtra("preferredAmbience", 0);
 
         // Call Manager to get recommendations
-        manager.Manage(fixedWeather, fixedLocation, time, breakfast, lunch, dinner, cuisineType, avgPrice, rating, distance, activityPreference, ambiance);
+        manager.Manage(fixedWeather, fixedLocation, fixedTime, breakfast, lunch, dinner, cuisineType, avgPrice, rating, distance, activityPreference, ambiance);
 
         // Filter activities based on weather
         activityRecommendations = manager.FinalListActivity;
@@ -217,19 +273,14 @@ public class SuggestionsActivity extends AppCompatActivity {
         locationTextView.setText("Location: " + fixedLocation);
         weatherConditionsTextView.setText("Weather Conditions: " + fixedWeather);
 
-//        for (Activity a: activityRecommendations) {
-//            System.out.println(a);
-//        }
-//        logger.info("displaying activities " +activityRecommendations);
-
         // Set up Activity Adapter
-        ActivityAdapter activityAdapter = new ActivityAdapter(activityRecommendations.subList(0, Math.min(3, activityRecommendations.size())));
+        ActivityAdapter activityAdapter = new ActivityAdapter(activityRecommendations.subList(0, Math.min(2, activityRecommendations.size())));
         activityRecyclerView.setAdapter(activityAdapter);
 
         // Sort restaurants by cost and set up Restaurant Adapter
         restaurantRecommendations.sort(Comparator.comparingDouble(r -> r.averageCost));
-        
-        RestaurantAdapter restaurantAdapter = new RestaurantAdapter(restaurantRecommendations.subList(0, Math.min(3, restaurantRecommendations.size())));
+
+        RestaurantAdapter restaurantAdapter = new RestaurantAdapter(restaurantRecommendations.subList(0, Math.min(1, restaurantRecommendations.size())));
         restaurantRecyclerView.setAdapter(restaurantAdapter);
     }
 }

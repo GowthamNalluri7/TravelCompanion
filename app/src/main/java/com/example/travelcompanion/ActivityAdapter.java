@@ -30,7 +30,7 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Activity activity = activities.get(position);
-        holder.activityTitle.setText(activity.name + "| " + activity.distance + "M away");
+        holder.activityTitle.setText(activity.name + " | " + activity.distance + "M away");
         holder.activityDetails.setText("Rating: " + activity.rating + " | Cost: $" + activity.avgCost);
     }
 

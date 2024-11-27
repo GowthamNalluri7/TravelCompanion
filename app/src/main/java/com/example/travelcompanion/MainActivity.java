@@ -7,12 +7,10 @@ import android.text.TextWatcher;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.material.slider.Slider;
 
 public class MainActivity extends AppCompatActivity {
 
     public EditText nameEditText, avgCostEditText, maxDistanceEditText;
-    private Slider indoorOutdoorSlider;
     private Spinner cuisineTypeSpinner, indoorOutdoorSpinner;
     private SeekBar ratingSeekBar, ambienceSeekBar;
     private TextView ratingValueTextView, ambienceValueTextView;

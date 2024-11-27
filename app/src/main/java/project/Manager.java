@@ -66,12 +66,17 @@ public class Manager {
                 // Else condition
                 FinalListRestaurant = fetchRestaurantRecommendations(Location, rf, pdistance, UserCType, PAvgPrice, Prating, Pambiance);
                 FinalListRestaurant.clear();
-                if ("Outdoor".equalsIgnoreCase(UserActP) || Objects.equals(Weather, "Sunny") || Objects.equals(Weather, "Cloudy")) {
+                if ("Outdoor".equalsIgnoreCase(UserActP) && (Objects.equals(Weather, "Sunny") || Objects.equals(Weather, "Cloudy"))) {
                     // User chose Outdoor, execute Activity Recommendations (1)
+//                    logger.info("ELSE USER");
                     FinalListActivity = fetchActivitiesRecommendations(Location, af, pdistance, PAvgPrice, Prating, UserActP);
                 } else {
                     // User did not choose Outdoor, execute Activity Recommendations with "Indoor"
-                    FinalListActivity = fetchActivitiesRecommendations(Location, af, pdistance, PAvgPrice, Prating, "Indoor");
+//                    logger.info("ELSE INDOOR");
+                    UserActP = "Indoor";
+                    FinalListActivity = fetchActivitiesRecommendations(Location, af, pdistance, PAvgPrice, Prating, UserActP);
+//                    FinalListActivity = fetchActivitiesRecommendations(Location, af, pdistance, PAvgPrice, Prating, "Indoor");
+//                    logger.info("ELSE INDOOR LIST"+ UserActP);
                 }
             }
         } catch (ParseException e) {
@@ -156,15 +161,10 @@ public class Manager {
 //        double threshold = 0.9;
         ActivityRecommender ar =new ActivityRecommender();
 
-
         UserPreferencesForActivities ActivityUser = new UserPreferencesForActivities(UserActP.equals("Outdoor"), Prating, PAvgPrice, pdistance);
-
 
         switch (Location) {
             case "Plateau Mont-Royal":
-
-
-
                 return ar.recommendActivities(ActivityUser, af.plateauActivities);
 
             case "Old Montreal":
